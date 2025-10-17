@@ -43,7 +43,7 @@ const upload = multer({ storage: storage });
 app.use("/images", express.static("upload/images"));
 
 app.post("/upload", upload.single("product"), (req, res) => {
-  const backendBaseUrl = process.env.BACKEND_URL ;
+  const backendBaseUrl = "https://back-end-1gp5.onrender.com" ;
 
   res.json({
     success: 1,

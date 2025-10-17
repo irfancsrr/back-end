@@ -18,12 +18,12 @@ app.use(cors());
 
 // Database Connection with MongoDB
 mongoose.connect(
-  "mongodb+srv://irfan_DB:Pratapgarh_100@irfancluster.ak2xgdr.mongodb.net/e-commerce"
+ "mongodb+srv://irfan_DB:Pratapgarh_100@irfancluster.ak2xgdr.mongodb.net/e-commerce"
 ).then(data=>console.log("mongodb connected successfully")).catch(err=>console.log("mongodb connection failed"));
 
 // API Creation
 app.get("/", (req, res) => {
-  res.send("Express App is Running");
+  res.send("Express App is Running, do you get that");
 });
 
 // Image storage engine

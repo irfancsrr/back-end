@@ -14,6 +14,7 @@ const { error } = require("console");
 const { ref } = require("process");
 
 app.use(express.json());
+app.use(express.urlencoded({extended:false}));
 app.use(cors());
 
 // Database Connection with MongoDB
@@ -67,6 +68,24 @@ const fetchUser = async (req, res, next) => {
     }
   }
 };
+//schema for promoCode
+const Promocode=mongoose.model('Promocode',{
+   promocode:{
+    type:String,
+    required:true,
+    unique:true
+   },
+   offamount:{
+    type:Number,
+    required:true
+   },
+   date: {
+    type: Number,
+    default: Date.now,
+  },
+
+})
+
 
 // Schema for Creating Products
 const Product = mongoose.model("Product", {
@@ -146,6 +165,10 @@ const Order=mongoose.model("Order",{
     type:String,
     required:true,
   },
+  totalAmount:{
+    type:Number,
+    required:true
+  },
   orderProduct: [
   {
     productId: {
@@ -170,14 +193,35 @@ const Order=mongoose.model("Order",{
     required:false,
   }
 })
+app.post('/addpromocode',async(req,res)=>{
+   const {promocode,offamount}=req.body;
+   try {
+   const promoCode=new Promocode({
+      promocode,offamount
+   })
+   await promoCode.save();
+   res.json({success:true,message:"promocodeAdded"}); 
+   } catch (error) {
+    console.log("promocode addition error");
+   res.json({success:false,message:"promocodeAdditionFailed"}); 
 
+   }
+   
+
+})
+
+app.post("/getOffamountByPromocode",async(req,res)=>{
+  const promo=await Promocode.findOne({promocode:req.body.promoValue});
+  res.json(promo);
+})
 app.post('/uploadOrder',fetchUser,async(req,res)=>{
   // const productID=new mongoose.Types.ObjectId(req.body.productID);
-  const {orderProduct,email,phoneNumber,address}=req.body;
+  const {orderProduct,email,phoneNumber,address,totalAmount}=req.body;
   const userID=new mongoose.Types.ObjectId(req.user.id);
   const order=new Order({
       email,
       address,
+      totalAmount,
       contactNumber:phoneNumber,
       orderProduct,     
       enrolledUser:userID
